@@ -25,11 +25,11 @@ model = ChatOpenAI(
     base_url = 'https://api.thesys.dev/v1/embed/'
 )
 
-checkpoint = InMemorySaver()
+checkpointer = InMemorySaver()
 
 agent = create_agent(
     model = model,
-    checkpoint = checkpoint,
+    checkpointer = checkpointer,
     tools = []
 )
 
@@ -58,26 +58,26 @@ class RequestObject(BaseModel):
     responseId:str
 
 
-@app.post("/api/chat")
+@app.post('/api/chat')
 async def chat(request: RequestObject):
-    config = {
-        "configurable":{
-            "thread_id":request.threadId,
-        }
-    }
+    config = {'configurable': {'thread_id': request.threadId}}
 
     def generate():
-        system_message = 'You are a stock analysis assistant. You have the ability to get real-time stock prices, historical stock prices (given a date range), news and balance sheet data for a given ticker symbol.'
         for token, _ in agent.stream(
-            {"messages": [
-                    SystemMessage(content=system_message),
-                    HumanMessage(content=request.prompt.content),
-                ], },stream_mode="messsages",config=config
+            {'messages': [
+                SystemMessage('You are a stock analysis assistant. You have the ability to get real-time stock prices, historical stock prices (given a date range), news and balance sheet data for a given ticker symbol.'),
+                HumanMessage(request.prompt.content)
+            ]},
+            stream_mode='messages',
+            config=config
         ):
             yield token.content
-        return StreamingResponse(generate(), media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache, no-transform", "Connection": "keep-alive"}
-        )
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    return StreamingResponse(generate(), media_type='text/event-stream',
+                             headers={
+                                 'Cache-Control': 'no-cache, no-transform',
+                                 'Connection': 'keep-alive',
+                             })
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8888)
