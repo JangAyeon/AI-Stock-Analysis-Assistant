@@ -1,9 +1,14 @@
 #!/bin/bash
 
 # 배포 스크립트
-# 사용법: ./deploy.sh [production|development]
+# 사용법: ./scripts/deploy.sh [production|development] 또는 scripts/deploy.sh [production|development]
 
 set -e
+
+# 프로젝트 루트 디렉토리로 이동
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
 
 ENV=${1:-production}
 

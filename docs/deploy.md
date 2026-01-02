@@ -28,6 +28,12 @@
 
 2. **Docker Compose로 실행**
 
+   스크립트 사용 (권장):
+   ```bash
+   ./scripts/deploy.sh
+   ```
+
+   또는 직접 실행:
    ```bash
    # 프로젝트 루트에서
    docker-compose up -d
