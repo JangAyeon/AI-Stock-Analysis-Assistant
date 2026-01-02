@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Git 브랜치 정리 스크립트
+# 원격에 없는 로컬 브랜치를 삭제합니다.
+# 사용법: ./scripts/git-cleanup.sh 또는 scripts/git-cleanup.sh
+
+set -e
+
+# 프로젝트 루트 디렉토리로 이동
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 # Fetch and prune remote branches
 git checkout main
 git fetch --prune
